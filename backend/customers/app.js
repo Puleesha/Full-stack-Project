@@ -18,8 +18,10 @@
 
 const express = require('express');
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 dotenv.config();
 const app = express();
+const Customer = require('./models/customer');
 mongoose.set('strictQuery', false);
 
 app.use(express.json());
@@ -47,8 +49,13 @@ const customers = [
     }
 ]
 
+const customer = new Customer({
+    name : 'caleb',
+    industry : 'marketing'
+});
+
 app.get('/', (req, res) => {
-    res.send('Hello World');
+    res.send(customer);
 });
 
 app.get('/api/customers', (req, res) => {
@@ -66,8 +73,8 @@ app.post('/', (req, res) => {
 
 const start = async() => {
     try{
-        await mongoose.connect(CONNECTION);  // Not working :(
-                console.log('App listening on port ' + PORT);
+        //await mongoose.connect(CONNECTION);  // Not working :(
+        console.log('App listening on port ' + PORT);
     }catch(e){
         console.log(e.message);
     }
