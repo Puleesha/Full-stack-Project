@@ -17,10 +17,20 @@
 // console.log(uuidv4());
 
 const express = require('express');
+const mongoose = require('mongoose');
+dotenv.config();
 const app = express();
+mongoose.set('strictQuery', false);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
-const PORT = 3000;
+
+if (process.env.NODE_ENV !== 'production'){  // If we dont flag npm run start with node environent = production
+    dotenv.config();
+}
+
+const PORT = process.env.PORT || 3000;
+const CONNECTION = process.env.CONNECTION;
 
 const customers = [
     {
@@ -39,21 +49,28 @@ const customers = [
 
 app.get('/', (req, res) => {
     res.send('Hello World');
-})
+});
 
 app.get('/api/customers', (req, res) => {
     res.send({"customers" : customers});
-})
+});
 
 app.post('/api/customers', (req, res) => {
     console.log(req.body);
     res.send(req.body);
-})
+});
 
 app.post('/', (req, res) => {
     res.send("This is a post request");
-})
+});
 
-app.listen(PORT, () => {
-    console.log('App listening on port ' + PORT);
-})
+const start = async() => {
+    try{
+        await mongoose.connect(CONNECTION);  // Not working :(
+                console.log('App listening on port ' + PORT);
+    }catch(e){
+        console.log(e.message);
+    }
+}
+
+start();
