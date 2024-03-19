@@ -54,17 +54,52 @@ const customer = new Customer({
     industry : 'marketing'
 });
 
+
 app.get('/', (req, res) => {
-    res.send(customer);
+    res.send("Welcome!");
 });
 
-app.get('/api/customers', (req, res) => {
-    res.send({"customers" : customers});
+app.get('/api/customers', async (req, res) => {
+    console.log(await mongoose.connection.db.listCollections().toArray());
+    try{
+        const result = await Customer.find();
+        res.send({"customers" : result});
+    }catch(e){
+        res.status(500).json({error: e.message});
+    }
+});
+
+app.get('/api/customers/:id/', async(req, res) => {
+    console.log({
+        requestParams : req.params,
+        requestQuery: req.query
+    });
+    try{
+        const {id: customerId} = req.params;
+        console.log(customerId);
+        const customer = await Customer.findById(customerId);
+        console.log(customer);
+        if (!customer){
+            res.status(404).json({error: 'User not found'});
+        }else{
+            res.json({customer});
+        }
+    }catch(e){
+        res.status(500).json({error: 'Something went wrong'})
+    }
 });
 
 app.post('/api/customers', (req, res) => {
     console.log(req.body);
-    res.send(req.body);
+    const customer = new Customer(req.body);
+    try{
+        customer.save();
+        res.status(201).json({customer});
+        // res.status(201).json(customer);  // Another way
+    }catch(e){
+        res.status(400).json({error: e.message}); 
+        // Bad request
+    }
 });
 
 app.post('/', (req, res) => {
