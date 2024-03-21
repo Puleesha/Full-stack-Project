@@ -69,7 +69,7 @@ app.get('/api/customers', async (req, res) => {
     }
 });
 
-app.get('/api/customers/:id/', async(req, res) => {
+app.get('/api/customers/:id', async(req, res) => {
     console.log({
         requestParams : req.params,
         requestQuery: req.query
@@ -88,6 +88,31 @@ app.get('/api/customers/:id/', async(req, res) => {
         res.status(500).json({error: 'Something went wrong'})
     }
 });
+
+// PUT method adds or replaces a resource
+// POST method adds a resource
+// PATCH updates a resource with only the required attributes being changed
+app.put('/api/customers/:id', async(req, res) => {
+    try{
+        const customerId = req.params.id
+        const result = await Customer.replaceOne({_id: customerId}, req.body);
+        console.log(result);
+        res.json({updatedCount: result.modifiedCount});
+    }catch(e){
+        res.status(500).json({error: 'Something went wrong'});
+    }
+});
+
+// Delete a resource
+app.delete('/api/customers', async (req, res) => {
+    try{
+        const customerId = req.params.id;
+        const result = await Customer.deleteOne({_id: customerId});
+        res.json({deletedCount: 1});
+    }catch{
+        res.status(500).json({error: 'Something went wrong'});
+    }
+})
 
 app.post('/api/customers', (req, res) => {
     console.log(req.body);
