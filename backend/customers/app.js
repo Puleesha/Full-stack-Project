@@ -100,7 +100,8 @@ app.put('/api/customers/:id', async(req, res) => {
         const customerId = req.params.id
         const result = await Customer.replaceOne({_id: customerId}, req.body);
         console.log(result);
-        res.json({updatedCount: result.modifiedCount});
+        res.json({customer});
+        // res.json({updatedCount: result.modifiedCount});
     }catch(e){
         res.status(500).json({error: 'Something went wrong'});
     }
