@@ -22,8 +22,11 @@ const dotenv = require('dotenv');
 dotenv.config();
 const app = express();
 const Customer = require('./models/customer');
+const cors = require('cors');
+
 mongoose.set('strictQuery', false);
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
 
