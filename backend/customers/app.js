@@ -98,11 +98,25 @@ app.get('/api/customers/:id', async(req, res) => {
 app.put('/api/customers/:id', async(req, res) => {
     try{
         const customerId = req.params.id
-        const result = await Customer.replaceOne({_id: customerId}, req.body);
-        console.log(result);
+        const customer = await Customer.findOneAndReplace({_id: customerId}, req.body, {new: true});
+        console.log(customer);
         res.json({customer});
         // res.json({updatedCount: result.modifiedCount});
     }catch(e){
+        console.log(e.message);
+        res.status(500).json({error: 'Something went wrong'});
+    }
+});
+
+app.patch('/api/customers/:id', async (req, res) => {
+    try{
+        const customerId = req.params.id
+        const customer = await Customer.findOneAndUpdate({_id: customerId}, req.body, {new: true});
+        console.log(customer);
+        res.json({customer});
+        // res.json({updatedCount: result.modifiedCount});
+    }catch(e){
+        console.log(e.message);
         res.status(500).json({error: 'Something went wrong'});
     }
 });

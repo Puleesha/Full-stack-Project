@@ -68,7 +68,7 @@ export default function Customer() {
         e.preventDefault();
         const url = baseUrl + 'api/customers/' + id;
         fetch(url, {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + localStorage.getItem('access'),
