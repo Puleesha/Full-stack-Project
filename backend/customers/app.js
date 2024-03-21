@@ -108,7 +108,7 @@ app.post('/', (req, res) => {
 
 const start = async() => {
     try{
-        //await mongoose.connect(CONNECTION);  // Not working :(
+        await mongoose.connect(CONNECTION);  // Not working :(
         console.log('App listening on port ' + PORT);
     }catch(e){
         console.log(e.message);
