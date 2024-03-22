@@ -114,12 +114,48 @@ app.patch('/api/customers/:id', async (req, res) => {
         const customer = await Customer.findOneAndUpdate({_id: customerId}, req.body, {new: true});
         console.log(customer);
         res.json({customer});
-        // res.json({updatedCount: result.modifiedCount});
     }catch(e){
         console.log(e.message);
         res.status(500).json({error: 'Something went wrong'});
     }
 });
+
+app.patch('/api/orders/:id', async (req, res) => {
+    console.log(req.params);
+    const orderId = req.params.id;
+    try{
+        await Customer.findOneAndUpdate(
+            {'orders._id': orderId},
+            {$set: {'orders.$': req.body}},  // $ refers to order that id matched
+            {new: true}
+        );
+
+        console.log(result);
+
+        if(result){
+            res.json(result);
+        }else{
+            res.status(404).json({error: 'something went wrong'});
+        }
+    }catch(e){
+        console.log(e.message);
+        res.status(500).json({error: 'something went wrong'});
+    }
+});
+
+app.get('/api/orders/:id', async (req, res) => {
+    try{
+        const result = await Customer.findOne({'orsers:_id': req.params.id});
+        if(result){
+            res.json(result);
+        }else{
+            res.status(404).json({'error': 'Order not found'});
+        }
+    } catch(e){
+        console.log(e.message);
+        res.status(500).json({error: 'something went wrong'});
+    }
+})
 
 // Delete a resource
 app.delete('/api/customers', async (req, res) => {
