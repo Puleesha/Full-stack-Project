@@ -24,6 +24,7 @@ const app = express();
 // const Customer = require('./models/customer');
 import {Customer} from './models/customer';
 const cors = require('cors');
+import {Request, Response} from 'express';
 
 mongoose.set('strictQuery', false);
 
@@ -32,7 +33,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
 
 if (process.env.NODE_ENV !== 'production'){  // If we dont flag npm run start with node environent = production
-    dotenv.config();
+    //dotenv.config();
 }
 
 const PORT = process.env.PORT || 3000;
@@ -59,11 +60,11 @@ const customer = new Customer({
 });
 
 
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
     res.send("Welcome!");
 });
 
-app.get('/api/customers', async (req, res) => {
+app.get('/api/customers', async (req: Request, res: Response) => {
     console.log(await mongoose.connection.db.listCollections().toArray());
     try{
         const result = await Customer.find();
@@ -73,7 +74,7 @@ app.get('/api/customers', async (req, res) => {
     }
 });
 
-app.get('/api/customers/:id', async(req, res) => {
+app.get('/api/customers/:id', async(req: Request, res: Response) => {
     console.log({
         requestParams : req.params,
         requestQuery: req.query
@@ -96,7 +97,7 @@ app.get('/api/customers/:id', async(req, res) => {
 // PUT method adds or replaces a resource
 // POST method adds a resource
 // PATCH updates a resource with only the required attributes being changed
-app.put('/api/customers/:id', async(req, res) => {
+app.put('/api/customers/:id', async(req: Request, res: Response) => {
     try{
         const customerId = req.params.id
         const customer = await Customer.findOneAndReplace({_id: customerId}, req.body, {new: true});
@@ -109,7 +110,7 @@ app.put('/api/customers/:id', async(req, res) => {
     }
 });
 
-app.patch('/api/customers/:id', async (req, res) => {
+app.patch('/api/customers/:id', async (req: Request, res: Response) => {
     try{
         const customerId = req.params.id
         const customer = await Customer.findOneAndUpdate({_id: customerId}, req.body, {new: true});
@@ -121,11 +122,11 @@ app.patch('/api/customers/:id', async (req, res) => {
     }
 });
 
-app.patch('/api/orders/:id', async (req, res) => {
+app.patch('/api/orders/:id', async (req: Request, res: Response) => {
     console.log(req.params);
     const orderId = req.params.id;
     try{
-        await Customer.findOneAndUpdate(
+        const result = await Customer.findOneAndUpdate(
             {'orders._id': orderId},
             {$set: {'orders.$': req.body}},  // $ refers to order that id matched
             {new: true}
@@ -144,7 +145,7 @@ app.patch('/api/orders/:id', async (req, res) => {
     }
 });
 
-app.get('/api/orders/:id', async (req, res) => {
+app.get('/api/orders/:id', async (req: Request, res: Response) => {
     try{
         const result = await Customer.findOne({'orsers:_id': req.params.id});
         if(result){
@@ -159,7 +160,7 @@ app.get('/api/orders/:id', async (req, res) => {
 })
 
 // Delete a resource
-app.delete('/api/customers', async (req, res) => {
+app.delete('/api/customers', async (req: Request, res: Response) => {
     try{
         const customerId = req.params.id;
         const result = await Customer.deleteOne({_id: customerId});
@@ -169,7 +170,7 @@ app.delete('/api/customers', async (req, res) => {
     }
 })
 
-app.post('/api/customers', (req, res) => {
+app.post('/api/customers', (req: Request, res: Response) => {
     console.log(req.body);
     const customer = new Customer(req.body);
     try{
@@ -182,7 +183,7 @@ app.post('/api/customers', (req, res) => {
     }
 });
 
-app.post('/', (req, res) => {
+app.post('/', (req: Request, res: Response) => {
     res.send("This is a post request");
 });
 
